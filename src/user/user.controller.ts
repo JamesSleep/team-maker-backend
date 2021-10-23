@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Post, Delete } from '@nestjs/common';
 import { Login, User } from './entity/user.entity';
 import { UserService } from './user.service';
+import { get } from 'http';
 
 @Controller('user')
 export class UserController {
@@ -24,6 +25,11 @@ export class UserController {
   @Get(':guild')
   getGuild(@Param('guild') guild: string): Promise<User[]> {
     return this.userService.getGuildUser(guild);
+  }
+
+  @Post('login')
+  login(@Body() loginData: Login): Promise<Boolean> {
+    return this.userService.login(loginData);
   }
 
   /*  @Delete(':index')
