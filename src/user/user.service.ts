@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Login, User } from './entity/user.entity';
 import * as Bcrypt from 'bcryptjs';
+import { check } from 'prettier';
 
 @Injectable()
 export class UserService {
@@ -28,6 +29,7 @@ export class UserService {
   }
 
   async create(userData: User): Promise<boolean> {
+    
     const addUser = await this.userRepository.create();
 
     const salt: string = await Bcrypt.genSalt(10);
@@ -43,14 +45,16 @@ export class UserService {
     return true;
   }
 
-  async login(loginUser: Login): Promise<boolean> {
+  async login(loginUser: Login): Promise<Boolean> {
     const user: User = await this.userRepository.findOne({
       where: {
         email: loginUser.email
       }
     });
 
-    const check = await Bcrypt.compare(loginUser.password, user.password);
+    const comparePW = await Bcrypt.hash(loginUser.password, user.salt);
+
+    const check = comparePW === user.password;
 
     return check;
   }
