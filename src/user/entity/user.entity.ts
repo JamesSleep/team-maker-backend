@@ -15,7 +15,7 @@ export class User {
   @Column({ length: 100, nullable: false })
   salt: string;
 
-  @Column({ length: 45, nullable: false })
+  @Column({ length: 45, nullable: true })
   guild: string;
 }
 
