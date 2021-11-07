@@ -82,12 +82,12 @@ export class UserService {
 
   async sendMail(email: string): Promise<Boolean> {
     try {
-      const certification = this.rand(111111, 999999);
+      const number:number = this.rand(111111, 999999);
       await this.mailerService.sendMail({
         to: email,
         from: 'tyuyiy@naver.com',
         subject: '팀메이커 비밀번호 찾기 인증번호입니다',
-        html: `안녕하세요. 팀메이커입니다 <br> 인증번호는 ${certification} 입니다.`
+        html: `안녕하세요. 팀메이커입니다 <br> 인증번호는 ${number} 입니다.`
       });
       return true;
     } catch (e) {
