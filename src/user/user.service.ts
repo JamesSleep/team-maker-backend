@@ -40,29 +40,47 @@ export class UserService {
     addUser.salt = salt;
 
     await this.userRepository.save(addUser);
-
     return true;
   }
 
-  async login(loginUser: Login): Promise<Boolean> {
-    const newUser: User = await this.getOneUser(loginUser.email);
+  async login(loginUser: Login): Promise<number> {
+    const user: User = await this.getOneUser(loginUser.email);
+    const timestamp = new Date().getTime();
+    const check = this.comparePassword(loginUser);
 
-    if (!newUser) return false;
+    if (!user || !check) return 1;
 
-    const comparePW = await Bcrypt.hash(loginUser.password, newUser.salt);
+    if (!user.auth_token) {
+      const authToken = await Bcrypt.genSalt(10);
+      user.auth_token = authToken;
+      user.timestamp = timestamp;
+      user.password = loginUser.password;
+      await this.modify(user);
+      return 0;
+    } else {
+      const gap = timestamp - user.timestamp;
+      // 60 * 60 * 24 * 1000 * 3 토큰 3일후 만료
+      if (gap < (60 * 60 * 24 * 1000 * 3)) {
+        return 0;
+      } else {
+        user.auth_token = null;
+        user.timestamp = null;
+        user.password = loginUser.password;
+        await this.modify(user);
+        return 2;
+      }
+    }
+  }
 
-    const check = comparePW === newUser.password;
-
-    return check;
+  async comparePassword(userData: Login): Promise<Boolean> {
+    const user: User = await this.getOneUser(userData.email);
+    const comparePW = await Bcrypt.hash(userData.password, user.salt);
+    return comparePW === user.password;
   }
 
   async modify(updateUser: User): Promise<Boolean> {
-    const user: User = await this.userRepository.findOne({
-      where: {
-        email: updateUser.email
-      }
-    });
-
+    const user: User = await this.getOneUser(updateUser.email);
+    if (!user) return false;
     const salt: string = await Bcrypt.genSalt(10);
     const password: string = await Bcrypt.hash(updateUser.password, salt);
 
@@ -70,6 +88,8 @@ export class UserService {
     user.password = password;
     user.salt = salt;
     user.guild = updateUser.guild;
+    user.auth_token = updateUser.auth_token;
+    user.timestamp = updateUser.timestamp;
 
     await this.userRepository.save(user);
 
@@ -80,7 +100,7 @@ export class UserService {
     await this.userRepository.delete({ index: index });
   }
 
-  async sendMail(email: string): Promise<Boolean> {
+  async sendMail(email: string): Promise<number> {
     try {
       const number:number = this.rand(111111, 999999);
       await this.mailerService.sendMail({
@@ -89,9 +109,10 @@ export class UserService {
         subject: '팀메이커 비밀번호 찾기 인증번호입니다',
         html: `안녕하세요. 팀메이커입니다 <br> 인증번호는 ${number} 입니다.`
       });
-      return true;
+      return number;
     } catch (e) {
       console.log(e);
+      return 0;
     }
   }
 

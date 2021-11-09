@@ -17,6 +17,12 @@ export class User {
 
   @Column({ length: 45, nullable: true })
   guild: string;
+
+  @Column({ length: 100, nullable: true })
+  auth_token: string;
+
+  @Column({ nullable: true })
+  timestamp: number;
 }
 
 export type Login = {
