@@ -21,8 +21,11 @@ export class User {
   @Column({ length: 100, nullable: true })
   auth_token: string;
 
-  @Column({ nullable: true })
-  timestamp: number;
+  @Column({ length: 100, nullable: true })
+  timestamp: string;
+
+  @Column({ length: 45, nullable: true })
+  position: string;
 }
 
 export type Login = {
