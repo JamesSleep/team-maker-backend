@@ -31,13 +31,16 @@ export class UserService {
 
   async create(userData: User): Promise<Boolean> {
     const addUser = await this.userRepository.create();
-
     const salt: string = await Bcrypt.genSalt(10);
     const password: string = await Bcrypt.hash(userData.password, salt);
+    const timestamp = new Date().getTime();
+    const token: string = await Bcrypt.genSalt(10);
 
     addUser.email = userData.email;
     addUser.password = password;
     addUser.salt = salt;
+    addUser.auth_token = token;
+    addUser.timestamp = timestamp.toString();
 
     await this.userRepository.save(addUser);
     return true;
@@ -53,14 +56,16 @@ export class UserService {
     if (!user.auth_token) {
       const authToken = await Bcrypt.genSalt(10);
       user.auth_token = authToken;
-      user.timestamp = timestamp;
+      user.timestamp = timestamp.toString();
       user.password = loginUser.password;
       await this.modify(user);
       return 0;
     } else {
-      const gap = timestamp - user.timestamp;
+      const gap = timestamp - Number(user.timestamp);
       // 60 * 60 * 24 * 1000 * 3 토큰 3일후 만료
       if (gap < (60 * 60 * 24 * 1000 * 3)) {
+        user.timestamp = timestamp.toString();
+        await this.modify(user);
         return 0;
       } else {
         user.auth_token = null;
@@ -90,6 +95,7 @@ export class UserService {
     user.guild = updateUser.guild;
     user.auth_token = updateUser.auth_token;
     user.timestamp = updateUser.timestamp;
+    user.position = updateUser.position;
 
     await this.userRepository.save(user);
 
