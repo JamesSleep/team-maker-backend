@@ -6,7 +6,7 @@ export class User {
   @PrimaryGeneratedColumn()
   index: number;
 
-  @Column({ length: 45, unique: true })
+  @Column({ length: 45, unique: false })
   email: string;
 
   @Column({ length: 100, nullable: false })
@@ -14,6 +14,9 @@ export class User {
 
   @Column({ length: 100, nullable: false })
   salt: string;
+
+  @Column({ length: 45, nullable: false })
+  nickname: string;
 
   @Column({ length: 45, nullable: true })
   guild: string;
@@ -23,12 +26,15 @@ export class User {
 
   @Column({ length: 100, nullable: true })
   timestamp: string;
-
-  @Column({ length: 45, nullable: true })
-  position: string;
 }
 
 export type Login = {
   email: string;
   password: string;
+}
+
+export type Question = {
+  email: string;
+  title: string;
+  content: string;
 }

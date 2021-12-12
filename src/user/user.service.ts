@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Login, User } from './entity/user.entity';
+import { Repository, DeleteResult } from 'typeorm';
+import { Login, User, Question } from './entity/user.entity';
 import * as Bcrypt from 'bcryptjs';
 import { MailerService } from '@nestjs-modules/mailer';
 
@@ -39,6 +39,7 @@ export class UserService {
     addUser.email = userData.email;
     addUser.password = password;
     addUser.salt = salt;
+    addUser.nickname = userData.nickname;
     addUser.auth_token = token;
     addUser.timestamp = timestamp.toString();
 
@@ -89,21 +90,19 @@ export class UserService {
     const salt: string = await Bcrypt.genSalt(10);
     const password: string = await Bcrypt.hash(updateUser.password, salt);
 
-    user.email = updateUser.email;
     user.password = password;
     user.salt = salt;
     user.guild = updateUser.guild;
     user.auth_token = updateUser.auth_token;
     user.timestamp = updateUser.timestamp;
-    user.position = updateUser.position;
 
     await this.userRepository.save(user);
 
     return true;
   }
 
-  async remove(index: number): Promise<void> {
-    await this.userRepository.delete({ index: index });
+  async remove(email: string): Promise<void> {
+    await this.userRepository.delete({ email: email });
   }
 
   async sendMail(email: string): Promise<number> {
@@ -119,6 +118,21 @@ export class UserService {
     } catch (e) {
       console.log(e);
       return 0;
+    }
+  }
+
+  async questionMail(question:Question): Promise<boolean> {
+    try {
+      await this.mailerService.sendMail({
+        to: 'tyuyiy@naver.com',
+        from: 'tyuyiy@naver.com',
+        subject: `${question.title} / ${question.email}`,
+        html: question.content
+      });
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
     }
   }
 
