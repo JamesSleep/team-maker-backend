@@ -32,8 +32,11 @@ export class RaidersService {
 
   async register(raidersData: Raiders): Promise<boolean> {
     const addRaiders = await this.raidersRepository.create();
-    addRaiders.char_index = raidersData.char_index;
+  
     addRaiders.team_index = raidersData.team_index;
+    addRaiders.member_index = raidersData.member_index;
+    addRaiders.char_name = raidersData.char_name;
+    addRaiders.class = raidersData.class;
 
     await this.raidersRepository.save(addRaiders);
 

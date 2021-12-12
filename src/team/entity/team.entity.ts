@@ -16,8 +16,14 @@ export class Team {
   start_date: string;
 
   @Column({ length: 45, nullable: false })
+  time: string;
+
+  @Column({ length: 45, nullable: false })
   leader: string;
 
   @Column({ length: 45, nullable: true })
   description: string;
+
+  @Column({ length: 45, nullable: false })
+  level: string;
 }

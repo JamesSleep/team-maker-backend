@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Patch, Post, Delete } from '@nestjs/common';
-import { Login, User } from './entity/user.entity';
+import { Login, User, Question } from './entity/user.entity';
 import { UserService } from './user.service';
 import { ResponseData } from 'src/common/response.entity';
 import { ErrorCode } from 'src/common/errorCode';
@@ -70,8 +70,16 @@ export class UserController {
     else return { success: false, data: ErrorCode[101] };
   }
 
-  /*  @Delete(':index')
-   deleteUser(@Param('index') index: number): Promise<string> {
-     
-   } */
+  @Get('delete/:email')
+  async deleteUser(@Param('email') email: string): Promise<ResponseData> {
+    await this.userService.remove(email);
+    return { success: true, data: "" };
+  } 
+
+  @Post('Question')
+  async question(@Body() question: Question): Promise<ResponseData> {
+    const result = await this.userService.questionMail(question);
+    if (result) return { success: true, data: "" };
+    else return { success: false, data: ErrorCode[102] };
+  }
 }

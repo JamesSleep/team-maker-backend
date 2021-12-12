@@ -11,6 +11,7 @@ import { UserModule } from './user/user.module';
 import { TeamModule } from './team/team.module';
 import { RaidersModule } from './raiders/raiders.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RaidModule } from './raid/raid.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     CharacterModule,
     TeamModule,
     RaidersModule,
+    RaidModule,
   ],
   controllers: [AppController],
   providers: [AppService],

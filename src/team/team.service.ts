@@ -22,6 +22,14 @@ export class TeamService {
     });
   }
 
+  async getOneTeamTitle(title: string): Promise<Team> {
+    return await this.teamRepository.findOne({
+      where: {
+        title: title
+      }
+    })
+  }
+
   async create(teamData: Team): Promise<boolean> {
     const addTeam = await this.teamRepository.create();
     addTeam.title = teamData.title;
@@ -29,6 +37,8 @@ export class TeamService {
     addTeam.start_date = teamData.start_date;
     addTeam.type = teamData.type;
     addTeam.description = teamData.description;
+    addTeam.time = teamData.time;
+    addTeam.level = teamData.level;
 
     await this.teamRepository.save(addTeam);
 

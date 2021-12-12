@@ -7,8 +7,14 @@ export class Raiders {
   index: number;
 
   @Column({ unique: false })
-  char_index: number;
+  member_index: number;
 
   @Column({ nullable: false })
   team_index: number;
+
+  @Column({ length: 45, nullable: false })
+  char_name: string;
+
+  @Column({ length: 45, nullable: false })
+  class: string;
 }
