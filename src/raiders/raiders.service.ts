@@ -14,18 +14,10 @@ export class RaidersService {
     return await this.raidersRepository.find();
   }
 
-  async getOneTeam(team_index: number): Promise<Raiders> {
-    return await this.raidersRepository.findOne({
+  async getOneTeam(team_index: number): Promise<Raiders[]> {
+    return await this.raidersRepository.find({
       where: {
         team_index: team_index
-      }
-    });
-  }
-
-  async getOneCharacter(char_index: number): Promise<Raiders> {
-    return await this.raidersRepository.findOne({
-      where: {
-        char_index: char_index
       }
     });
   }
@@ -41,5 +33,9 @@ export class RaidersService {
     await this.raidersRepository.save(addRaiders);
 
     return true;
+  }
+
+  async remove(index: number): Promise<void> {
+    await this.raidersRepository.delete({ index: index });
   }
 }
