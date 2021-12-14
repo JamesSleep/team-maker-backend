@@ -25,6 +25,14 @@ export class UserService {
     });
   }
 
+  async getOneUserForIndex(index: number): Promise<User> {
+    return await this.userRepository.findOne({
+      where: {
+        index: index
+      }
+    })
+  }
+
   async getGuildUser(guild: string): Promise<User[]> {
     return await this.userRepository.find({ guild: guild })
   }

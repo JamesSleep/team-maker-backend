@@ -11,14 +11,18 @@ export class TeamService {
   ) { }
 
   async getAllTeam(): Promise<Team[]> {
-    return await this.teamRepository.find();
+    return await this.teamRepository.find({
+      order: {
+        index: "DESC"
+      }
+    });
   }
 
   async getOneTeam(index: number): Promise<Team> {
     return await this.teamRepository.findOne({
       where: {
         index: index
-      }
+      },
     });
   }
 
