@@ -1,6 +1,6 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: "team", schema: "teammaker" })
+@Entity({ name: "teamlist", schema: "teammaker" })
 
 export class Team {
   @PrimaryGeneratedColumn()
@@ -26,4 +26,7 @@ export class Team {
 
   @Column({ length: 45, nullable: false })
   level: string;
+
+  @Column({ length: 100, nullable: false })
+  timestamp: string;
 }

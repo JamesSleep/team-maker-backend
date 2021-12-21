@@ -13,7 +13,7 @@ export class TeamService {
   async getAllTeam(): Promise<Team[]> {
     return await this.teamRepository.find({
       order: {
-        index: "DESC"
+        timestamp: "DESC"
       }
     });
   }
@@ -43,9 +43,15 @@ export class TeamService {
     addTeam.description = teamData.description;
     addTeam.time = teamData.time;
     addTeam.level = teamData.level;
+    addTeam.timestamp = teamData.timestamp;
 
     await this.teamRepository.save(addTeam);
 
+    return true;
+  }
+
+  async remove(index: number): Promise<boolean> {
+    await this.teamRepository.delete({ index: index });
     return true;
   }
 }
