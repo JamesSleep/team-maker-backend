@@ -9,6 +9,7 @@ Database는 AWS MySQL사용
 
 - 비밀번호변경 및 찾기 이용시 nodemailer 사용 (naver메일 smtp)
 - 로그인, 회원가입시 비밀번호 보안을 위해 cryptoJS사용, DB저장시에도 password, salt 구분하여 저장
+- 서버 자동종료 방지를 위해 PM2 사용
 
 ## API
 - /user
