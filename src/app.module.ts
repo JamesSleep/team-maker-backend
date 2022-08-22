@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { MailerModule } from '@nestjs-modules/mailer';
@@ -12,12 +12,11 @@ import { TeamModule } from './team/team.module';
 import { RaidersModule } from './raiders/raiders.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RaidModule } from './raid/raid.module';
+import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true
-    }), 
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
@@ -35,16 +34,16 @@ import { RaidModule } from './raid/raid.module';
         port: 587,
         auth: {
           user: process.env.AUTH_USER,
-          pass: process.env.AUTH_PASS
-        }
+          pass: process.env.AUTH_PASS,
+        },
       },
       template: {
         dir: process.cwd() + '/template/',
         adapter: new EjsAdapter(),
         options: {
-          strict: true
-        }
-      }
+          strict: true,
+        },
+      },
     }),
     UserModule,
     CharacterModule,
@@ -55,8 +54,10 @@ import { RaidModule } from './raid/raid.module';
   controllers: [AppController],
   providers: [AppService],
 })
+export class AppModule implements NestModule {
+  constructor(private readonly connection: Connection) {}
 
-export class AppModule {
-  constructor(private readonly connection: Connection) { }
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
 }
-
