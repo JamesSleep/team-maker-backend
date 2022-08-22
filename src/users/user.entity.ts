@@ -3,15 +3,23 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { IsNotEmpty } from 'class-validator';
+import { Team } from 'src/team/team.entity';
 
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ManyToOne(() => Team, (team) => team.member, {
+    cascade: ['insert', 'remove', 'update'],
+  })
+  team: string;
 
   @IsNotEmpty({ message: '이메일을 입력해주세요.' })
   @Column({ length: 100, unique: true })
@@ -25,16 +33,12 @@ export class User {
   @Column({ nullable: false })
   nickname: string;
 
-  @IsNotEmpty({ message: '팀명을 입력해주세요.' })
-  @Column({ nullable: true })
-  team: string;
-
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   @DeleteDateColumn()
-  deleted_at: Date;
+  deletedAt: Date;
 }
