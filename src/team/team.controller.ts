@@ -4,7 +4,7 @@ import { TeamService } from './team.service';
 import { ResponseData } from 'src/common/response.entity';
 import { ErrorCode } from 'src/common/errorCode';
 import { RaidersService } from 'src/raiders/raiders.service';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/users/user.service';
 
 @Controller('team')
 export class TeamController {
@@ -12,7 +12,7 @@ export class TeamController {
     private readonly teamService: TeamService,
     private readonly raidersService: RaidersService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   @Get()
   async getAllTeam(): Promise<ResponseData> {
@@ -38,10 +38,10 @@ export class TeamController {
   async getAllTeamByMan(@Param('index') index: number): Promise<ResponseData> {
     const teamList = await this.teamService.getAllTeam();
     let array = [];
-    
-    for (let i=0; i<teamList.length; i++) {
+
+    for (let i = 0; i < teamList.length; i++) {
       const raiders = await this.raidersService.getOneTeam(teamList[i].index);
-      for (let j=0; j<raiders.length; j++) {
+      for (let j = 0; j < raiders.length; j++) {
         if (raiders[j].member_index === Number(index)) {
           array.push(teamList[i]);
         }
@@ -60,7 +60,7 @@ export class TeamController {
     }
   }
 
-  @Get("remove/:index")
+  @Get('remove/:index')
   async delete(@Param('index') index: number): Promise<ResponseData> {
     await this.teamService.remove(index);
     return { success: true, data: null };

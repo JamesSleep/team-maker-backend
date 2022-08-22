@@ -8,8 +8,8 @@ import * as Bcrypt from 'bcryptjs';
 export class CharacterService {
   constructor(
     @InjectRepository(Character)
-    private readonly characterRepository: Repository<Character>
-  ) { }
+    private readonly characterRepository: Repository<Character>,
+  ) {}
 
   async getAllCharacter(): Promise<Character[]> {
     return await this.characterRepository.find();
@@ -18,13 +18,15 @@ export class CharacterService {
   async getOneCharacter(nickname: string): Promise<Character> {
     return await this.characterRepository.findOne({
       where: {
-        nickname: nickname
-      }
+        nickname: nickname,
+      },
     });
   }
 
   async getAllforOne(user_idx: number): Promise<Character[]> {
-    return await this.characterRepository.find({ member_index: user_idx })
+    return await this.characterRepository.find({
+      where: { member_index: user_idx },
+    });
   }
 
   async create(charData: Character): Promise<boolean> {

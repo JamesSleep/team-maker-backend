@@ -6,12 +6,16 @@ import { TeamService } from './team.service';
 import { Raiders } from 'src/raiders/entity/raiders.entity';
 import { RaidersService } from 'src/raiders/raiders.service';
 import { RaidService } from 'src/raid/raid.service';
-import { User } from 'src/user/entity/user.entity';
-import { UserService } from 'src/user/user.service';
+import { User } from 'src/users/user.entity';
+import { UserService } from 'src/users/user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Team]), TypeOrmModule.forFeature([Raiders]), TypeOrmModule.forFeature([User])],
+  imports: [
+    TypeOrmModule.forFeature([Team]),
+    TypeOrmModule.forFeature([Raiders]),
+    TypeOrmModule.forFeature([User]),
+  ],
   controllers: [TeamController],
   providers: [TeamService, RaidersService, UserService],
 })
-export class TeamModule { }
+export class TeamModule {}
