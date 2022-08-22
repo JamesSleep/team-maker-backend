@@ -1,57 +1,36 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Team } from './entity/team.entity';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { CreateTeamDto, UpdateTeamDto } from './dto/team.dto';
+import { TeamRepository } from './team.repository';
 
 @Injectable()
 export class TeamService {
-  constructor(
-    @InjectRepository(Team)
-    private readonly teamRepository: Repository<Team>
-  ) { }
+  constructor(private readonly teamRepository: TeamRepository) {}
 
-  async getAllTeam(): Promise<Team[]> {
-    return await this.teamRepository.find({
-      order: {
-        timestamp: "DESC"
-      }
-    });
+  async getAllTeams() {
+    return await this.teamRepository.find();
   }
 
-  async getOneTeam(index: number): Promise<Team> {
-    return await this.teamRepository.findOne({
-      where: {
-        index: index
-      },
-    });
+  async getOneTeam(id: number) {
+    return await this.teamRepository.findOne({ where: { id } });
   }
 
-  async getOneTeamTitle(title: string): Promise<Team> {
-    return await this.teamRepository.findOne({
-      where: {
-        title: title
-      }
-    })
+  async create(body: CreateTeamDto) {
+    const { name, member } = body;
+
+    const isTeam = await this.teamRepository.findOne({ where: { name } });
+
+    if (isTeam) {
+      throw new BadRequestException('이미 존재하는 팀명입니다.');
+    }
+
+    return await this.teamRepository.save({ name, leader: member, member });
   }
 
-  async create(teamData: Team): Promise<boolean> {
-    const addTeam = await this.teamRepository.create();
-    addTeam.title = teamData.title;
-    addTeam.leader = teamData.leader;
-    addTeam.start_date = teamData.start_date;
-    addTeam.type = teamData.type;
-    addTeam.description = teamData.description;
-    addTeam.time = teamData.time;
-    addTeam.level = teamData.level;
-    addTeam.timestamp = teamData.timestamp;
-
-    await this.teamRepository.save(addTeam);
-
-    return true;
+  async modify(id: number, body: UpdateTeamDto) {
+    return await this.teamRepository.save({ id, ...body });
   }
 
-  async remove(index: number): Promise<boolean> {
-    await this.teamRepository.delete({ index: index });
-    return true;
+  async remove(id: number) {
+    return await this.teamRepository.softDelete(id);
   }
 }
