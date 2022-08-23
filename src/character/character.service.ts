@@ -1,43 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Character } from './entity/character.entity';
-import * as Bcrypt from 'bcryptjs';
+import { User } from 'src/users/user.entity';
+import { CharacterRepository } from './character.repository';
+import { CreateCharacterDto, UpdateCharacterDto } from './dto/character.dto';
 
 @Injectable()
 export class CharacterService {
-  constructor(
-    @InjectRepository(Character)
-    private readonly characterRepository: Repository<Character>,
-  ) {}
+  constructor(private readonly characterRepository: CharacterRepository) {}
 
-  async getAllCharacter(): Promise<Character[]> {
+  async getAllCharacters() {
     return await this.characterRepository.find();
   }
 
-  async getOneCharacter(nickname: string): Promise<Character> {
-    return await this.characterRepository.findOne({
-      where: {
-        nickname: nickname,
-      },
-    });
+  async getOneCharacter(id: number) {
+    return await this.characterRepository.findOne({ where: { id } });
   }
 
-  async getAllforOne(user_idx: number): Promise<Character[]> {
-    return await this.characterRepository.find({
-      where: { member_index: user_idx },
-    });
+  async getByUser(user: User) {
+    return await this.characterRepository.find({ where: { user } });
   }
 
-  async create(charData: Character): Promise<boolean> {
-    const addCharacter = await this.characterRepository.create();
-    addCharacter.nickname = charData.nickname;
-    addCharacter.class = charData.class;
-    addCharacter.memo = charData.memo;
-    addCharacter.member_index = charData.member_index;
+  async create(body: CreateCharacterDto) {
+    return await this.characterRepository.save(body);
+  }
 
-    await this.characterRepository.save(addCharacter);
+  async modify(id: number, body: UpdateCharacterDto) {
+    return await this.characterRepository.save({ id, ...body });
+  }
 
-    return true;
+  async remove(id: number) {
+    return await this.characterRepository.delete(id);
   }
 }
