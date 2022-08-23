@@ -10,6 +10,7 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { AuthModule } from './auth/auth.module';
 import { TeamModule } from './team/team.module';
 import { RaidModule } from './raid/raid.module';
+import { ContentsModule } from './contents/contents.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { RaidModule } from './raid/raid.module';
     AuthModule,
     TeamModule,
     RaidModule,
+    ContentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
