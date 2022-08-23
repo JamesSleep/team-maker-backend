@@ -4,12 +4,14 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { IsNotEmpty } from 'class-validator';
 import { Team } from 'src/team/team.entity';
+import { Character } from 'src/character/character.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -20,6 +22,11 @@ export class User {
     cascade: ['insert', 'remove', 'update'],
   })
   team: string;
+
+  @OneToMany(() => Character, (character) => character.user, {
+    cascade: true,
+  })
+  character: Character;
 
   @IsNotEmpty({ message: '이메일을 입력해주세요.' })
   @Column({ length: 100, unique: true })
