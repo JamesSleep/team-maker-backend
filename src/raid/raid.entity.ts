@@ -1,8 +1,15 @@
+import { Character } from 'src/character/character.entity';
+import { Contents } from 'src/contents/contents.entity';
+import { User } from 'src/users/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -12,14 +19,23 @@ export class Raid {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  name: string;
+  @ManyToMany(() => Contents)
+  @JoinColumn()
+  contents: Contents;
 
-  @Column()
-  level: string;
+  @ManyToMany(() => Character)
+  @JoinTable()
+  character: Character;
 
-  @Column()
-  category: string;
+  @ManyToOne(() => User)
+  @JoinColumn()
+  raidLeader: User;
+
+  @Column({ nullable: false })
+  title: string;
+
+  @Column({ nullable: false })
+  description: string;
 
   @CreateDateColumn()
   createdAt: Date;
