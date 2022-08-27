@@ -1,3 +1,4 @@
+import { IsNotEmpty } from 'class-validator';
 import { Character } from 'src/character/character.entity';
 import { Contents } from 'src/contents/contents.entity';
 import { User } from 'src/users/user.entity';
@@ -31,11 +32,16 @@ export class Raid {
   @JoinColumn()
   raidLeader: User;
 
+  @IsNotEmpty({ message: '제목을 입력해주세요.' })
   @Column({ nullable: false })
   title: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   description: string;
+
+  @IsNotEmpty({ message: '시작날짜를 입력해주세요.' })
+  @Column({ nullable: false })
+  startDate: Date;
 
   @CreateDateColumn()
   createdAt: Date;
