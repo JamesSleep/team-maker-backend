@@ -6,18 +6,12 @@ import {
   Param,
   Patch,
   Post,
-  UseFilters,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
-import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
-import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
 import { CreateTeamDto, UpdateTeamDto } from './dto/team.dto';
 import { TeamService } from './team.service';
 
-@UseInterceptors(SuccessInterceptor)
-@UseFilters(HttpExceptionFilter)
 @UseGuards(JwtAuthGuard)
 @Controller('team')
 export class TeamController {

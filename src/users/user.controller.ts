@@ -7,22 +7,16 @@ import {
   Post,
   Delete,
   UseGuards,
-  UseInterceptors,
-  UseFilters,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { LoginUserRequestDto } from 'src/auth/dto/login.user.request.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/user.decorators';
-import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
-import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
 import { CreateUserDto } from './dto/users.create.dto';
 import { UpdateUserDto } from './dto/users.update.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
-@UseInterceptors(SuccessInterceptor)
-@UseFilters(HttpExceptionFilter)
 @Controller('user')
 export class UserController {
   constructor(

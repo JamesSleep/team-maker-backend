@@ -6,20 +6,14 @@ import {
   Param,
   Patch,
   Post,
-  UseFilters,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/user.decorators';
-import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
-import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
 import { User } from 'src/users/user.entity';
 import { CharacterService } from './character.service';
 import { CreateCharacterDto, UpdateCharacterDto } from './dto/character.dto';
 
-@UseInterceptors(SuccessInterceptor)
-@UseFilters(HttpExceptionFilter)
 @UseGuards(JwtAuthGuard)
 @Controller('character')
 export class CharacterController {
